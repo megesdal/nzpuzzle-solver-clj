@@ -1,12 +1,12 @@
 (ns nzgame-clj.solnfinder
   (:gen-class)
-  (:require [nzgame-clj.core :refer [value-with-place-mask board-expand board-replace-value]]))
+  (:require [nzgame-clj.core :refer [value-with-place-mask board-expand board-replace-value board-options complete?]]))
 
 (defn valid?
   [board idx value]
   ;(println "valid?" (board-expand board) idx value)
   (if (= (value-with-place-mask board idx) (- value 8))
-    false 
+    false
     (let
       [
        x (quot idx 4)
@@ -18,8 +18,8 @@
       ]
       (loop [i srow]
         (if (> i erow)
-          true 
-          (if (not 
+          true
+          (if (not
             (loop [j scol]
               (if (> j ecol)
                 true
@@ -38,15 +38,15 @@
       '(board))
     (if (> (value-with-place-mask board idx) 7) ; if already placement at idx
       (rec-find-solution-boards board tiles (+ idx 1) solutions)
-      (reduce concat 
-        (map 
+      (reduce concat
+        (map
           (fn [k]
             (rec-find-solution-boards
               (board-replace-value board idx (+ k 8))
               (assoc tiles k (- (get tiles k) 1))
               (+ idx 1)
               solutions))
-          (filter 
+          (filter
             (fn [k]
               (and
                 (> (get tiles k) 0)
@@ -58,10 +58,37 @@
   [board tiles]
   (rec-find-solution-boards board tiles 0 []))
 
+(defn- rec-find-solutions
+  [path idx tiles]
+  (let [board (get path idx)]
+    ;(println "Path:" idx (board-expand board) tiles)
+    (if (complete? board)
+      (println "!!!!!!!Complete path" path)
+      (let [options (board-options board)]
+        (dorun (map
+          (fn [[new-board option-k]] 
+            ;(println "Trying board" option-k (board-expand new-board) (+ idx 1) (assoc tiles option-k (- (get tiles option-k) 1)))
+            (rec-find-solutions (conj path new-board) (+ idx 1) (assoc tiles option-k (- (get tiles option-k) 1))))
+          (filter
+            (fn [[new-board option-k]] 
+              (> (get tiles option-k) 0))
+            options)))))))
+
+(defn find-solutions
+  [board tiles]
+  (println (board-expand board) tiles)
+  (rec-find-solutions
+    [board]
+    0
+    tiles
+    ; inputPaths to prevent going down the same path twice...
+    ; solutionPaths to store solutions
+    ; impasses
+    ))
+
 ;(defn rec-has-solution
 ;  []
 
 ;(defn has-solution
 ;  [board tiles]
 ;  (rec-has-solution board tiles (find-solution-board )))
-

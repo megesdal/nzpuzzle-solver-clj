@@ -7,9 +7,9 @@
   (if (= i (count values))
     board
     (recur values (+ i 1)
-      (bit-or board 
-        (bit-shift-left 
-          (get values i) 
+      (bit-or board
+        (bit-shift-left
+          (get values i)
           (- 60 (bit-shift-left i 2)))))))
 
 (defn board-condense
@@ -40,9 +40,66 @@
   [board i value]
   (let [and-mask (bit-not (bit-shift-left 15 (- 60 (bit-shift-left i 2))))]
     (bit-or (bit-and board and-mask)
-      (bit-shift-left 
+      (bit-shift-left
         value
         (- 60 (bit-shift-left i 2))))))
+
+(defn is-placed
+  [board idx]
+  (= (bit-and (value-with-place-mask board idx) 8) 8))
+
+(defn- board-options-at-mask
+  [board idx]
+  (if (is-placed board idx)
+    [false false false false] 
+    (let
+      [
+       x (quot idx 4)
+       y (mod idx 4)
+       xs (if (> x 0) (- x 1) x)
+       xf (if (< x 3) (+ x 1) x)
+       ys (if (> y 0) (- y 1) y)
+       yf (if (< y 3) (+ y 1) y)
+      ]
+      (reduce 
+        (fn [options value] (assoc options value false))
+        [true true true true true] ;TODO: bitmask?
+        (map
+          (fn [k] (bit-and (value-with-place-mask board k) 7))
+          (filter
+            (fn [k]
+              (let [kx (quot k 4) ky (mod k 4)]
+                (and (>= kx xs) (<= kx xf) (>= ky ys) (<= ky yf))))
+            (range 16)))))))
+
+; TODO: should I reduce to a list?
+(defn board-options-at
+  [board idx]
+  (let [mask (board-options-at-mask board idx)]
+    (filter
+      (fn [i] (get mask i))
+      (range 5))))
+
+; TODO: reduce to a list?
+(defn board-options
+  [board]
+  (map 
+    (fn [[k option-k]] [(board-replace-value board k (bit-or option-k 8)) option-k k])
+    (mapcat
+      (fn [k]
+        (map
+          (fn [option-k] [k option-k])
+          (board-options-at board k)))
+      (range 16))))
+
+(defn complete?
+  [board]
+  (loop [i 0]
+    (if (> i 15)
+      true
+      (if (< (value-with-place-mask board i) 8)
+        false
+        (recur (+ i 1))))))
 
 (def default-start-board [2 3 2 0 1 0 1 4 3 4 3 0 0 2 1 4]) ; 2D matrix of index|is-placed-mask
 (def default-start-tiles [3 4 3 3 3])                       ; index -> count
