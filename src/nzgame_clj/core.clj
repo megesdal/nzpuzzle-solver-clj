@@ -36,6 +36,23 @@
   [board]
   (rec-board-expand board 16 []))
 
+(defn board-print
+  "Prints board to console"
+  [board]
+  (println ">>>>>><<<<<<")
+  (print 
+    (clojure.string/join 
+      (map-indexed
+        (fn [i k]
+          (let [placed (= (bit-and k 8) 8)]
+            (format "%s%d%s%s" 
+              (if placed "[" "(") 
+              (bit-and k 7)
+              (if placed "]" ")") 
+              (if (= (mod i 4) 3) "\n" ""))))
+        (board-expand board))))
+  (println "<<<<<<>>>>>>"))
+
 (defn board-replace-value
   [board i value]
   (let [and-mask (bit-not (bit-shift-left 15 (- 60 (bit-shift-left i 2))))]
@@ -109,6 +126,7 @@
   [& args]
   (println "Hello, World!")
   (println default-start-board)
+  (board-print (board-condense default-start-board))
   (let [board (board-condense default-start-board)]
     (println board)
     (println (board-expand board))

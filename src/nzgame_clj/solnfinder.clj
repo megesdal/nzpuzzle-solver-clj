@@ -1,6 +1,6 @@
 (ns nzgame-clj.solnfinder
   (:gen-class)
-  (:require [nzgame-clj.core :refer [value-with-place-mask board-expand board-replace-value board-options complete?]]))
+  (:require [nzgame-clj.core :refer [value-with-place-mask board-print board-expand board-replace-value board-options complete?]]))
 
 (defn valid?
   [board idx value]
@@ -61,36 +61,34 @@
   (let [board (get path idx)]
     ; check input paths
     (if (contains? @input-paths board)
-      (comment "TODO: add input path")
-      ;(println "Already tried" (board-expand board) "...")  
+      (comment "TODO: add new input path for board...")
       (do
-        (println "Trying" (board-expand board) tiles "...")  
         (when (> idx 0)
           (swap! input-paths assoc board [(get path (- idx 1))]))
         (if (complete? board)
-          (println "!!!!!!!Complete path" path)
+          (do
+            (println "!!!!!!!Complete path")
+            (dorun (map board-print  path)))
           (let [options (board-options board)]
             (dorun (map
-              (fn [[new-board option-k]] 
-                ;(println "Trying board" option-k (board-expand new-board) (+ idx 1) (assoc tiles option-k (- (get tiles option-k) 1)))
-                (rec-find-solutions 
-                  (conj path new-board) 
-                  (+ idx 1) 
-                  (assoc tiles option-k (- (get tiles option-k) 1)) 
-                  input-paths))
-              (filter
                 (fn [[new-board option-k]] 
-                  (> (get tiles option-k) 0))
-                options)))))))))
+                  (rec-find-solutions 
+                    (conj path new-board) 
+                    (+ idx 1) 
+                    (assoc tiles option-k (- (get tiles option-k) 1)) 
+                    input-paths))
+                (filter
+                  (fn [[new-board option-k]] 
+                    (> (get tiles option-k) 0))
+                  options)))))))))
 
 (defn find-solutions
   [board tiles]
-  (println (board-expand board) tiles)
   (rec-find-solutions
     [board]
     0
     tiles
-    (atom {}) ; input-paths to prevent going down the same path twice...
+    (atom {}) ; input-paths to prevent going down the same path twice... and to build the solution graph
     ; solutionPaths to store solutions
     ; impasses
     ))

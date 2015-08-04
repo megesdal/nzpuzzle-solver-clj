@@ -3,10 +3,10 @@
             [nzgame-clj.solnfinder :refer :all]
             [nzgame-clj.core :refer :all]))
 
-;(deftest a-test
-;  (testing "default board solutions"
-;    (find-solution-boards (board-condense default-start-board) default-start-tiles)
-;    (is (= 1 1))))
+(deftest a-test
+  (testing "default board solutions"
+    (find-solution-boards (board-condense default-start-board) default-start-tiles)
+    (is (= 1 1))))
 
 (deftest b-test
   (testing "default board solutions"
