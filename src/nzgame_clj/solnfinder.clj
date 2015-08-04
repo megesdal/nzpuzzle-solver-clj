@@ -4,7 +4,6 @@
 
 (defn valid?
   [board idx value]
-  ;(println "valid?" (board-expand board) idx value)
   (if (= (value-with-place-mask board idx) (- value 8))
     false
     (let
@@ -31,7 +30,6 @@
 
 (defn rec-find-solution-boards
   [board tiles idx solutions]
-  ;(println (board-expand board) tiles idx)
   (if (= idx 16)
     (do
       (println "Add solution:" (board-expand board))
@@ -59,20 +57,31 @@
   (rec-find-solution-boards board tiles 0 []))
 
 (defn- rec-find-solutions
-  [path idx tiles]
+  [path idx tiles input-paths]
   (let [board (get path idx)]
-    ;(println "Path:" idx (board-expand board) tiles)
-    (if (complete? board)
-      (println "!!!!!!!Complete path" path)
-      (let [options (board-options board)]
-        (dorun (map
-          (fn [[new-board option-k]] 
-            ;(println "Trying board" option-k (board-expand new-board) (+ idx 1) (assoc tiles option-k (- (get tiles option-k) 1)))
-            (rec-find-solutions (conj path new-board) (+ idx 1) (assoc tiles option-k (- (get tiles option-k) 1))))
-          (filter
-            (fn [[new-board option-k]] 
-              (> (get tiles option-k) 0))
-            options)))))))
+    ; check input paths
+    (if (contains? @input-paths board)
+      (comment "TODO: add input path")
+      ;(println "Already tried" (board-expand board) "...")  
+      (do
+        (println "Trying" (board-expand board) tiles "...")  
+        (when (> idx 0)
+          (swap! input-paths assoc board [(get path (- idx 1))]))
+        (if (complete? board)
+          (println "!!!!!!!Complete path" path)
+          (let [options (board-options board)]
+            (dorun (map
+              (fn [[new-board option-k]] 
+                ;(println "Trying board" option-k (board-expand new-board) (+ idx 1) (assoc tiles option-k (- (get tiles option-k) 1)))
+                (rec-find-solutions 
+                  (conj path new-board) 
+                  (+ idx 1) 
+                  (assoc tiles option-k (- (get tiles option-k) 1)) 
+                  input-paths))
+              (filter
+                (fn [[new-board option-k]] 
+                  (> (get tiles option-k) 0))
+                options)))))))))
 
 (defn find-solutions
   [board tiles]
@@ -81,7 +90,7 @@
     [board]
     0
     tiles
-    ; inputPaths to prevent going down the same path twice...
+    (atom {}) ; input-paths to prevent going down the same path twice...
     ; solutionPaths to store solutions
     ; impasses
     ))
