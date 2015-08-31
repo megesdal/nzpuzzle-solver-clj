@@ -1,6 +1,6 @@
-(ns nzgame-clj.core-test
+(ns nzpuzzle-solver.core-test
   (:require [clojure.test :refer :all]
-            [nzgame-clj.core :refer :all]))
+            [nzpuzzle-solver.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

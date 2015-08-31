@@ -1,4 +1,6 @@
-(ns nzgame-clj.core
+;; move board to another file
+
+(ns nzpuzzle-solver.core
   (:gen-class))
 
 (defn rec-board-condense
@@ -6,7 +8,7 @@
   ;(println "rec-board-condense" i board)
   (if (= i (count values))
     board
-    (recur values (+ i 1)
+    (recur values (inc i)
       (bit-or board
         (bit-shift-left
           (get values i)
@@ -40,15 +42,15 @@
   "Prints board to console"
   [board]
   (println ">>>>>><<<<<<")
-  (print 
-    (clojure.string/join 
+  (print
+    (clojure.string/join
       (map-indexed
         (fn [i k]
           (let [placed (= (bit-and k 8) 8)]
-            (format "%s%d%s%s" 
-              (if placed "[" "(") 
+            (format "%s%d%s%s"
+              (if placed "[" "(")
               (bit-and k 7)
-              (if placed "]" ")") 
+              (if placed "]" ")")
               (if (= (mod i 4) 3) "\n" ""))))
         (board-expand board))))
   (println "<<<<<<>>>>>>"))
@@ -68,7 +70,7 @@
 (defn- board-options-at-mask
   [board idx]
   (if (is-placed board idx)
-    [false false false false] 
+    [false false false false]
     (let
       [
        x (quot idx 4)
@@ -78,7 +80,7 @@
        ys (if (> y 0) (- y 1) y)
        yf (if (< y 3) (+ y 1) y)
       ]
-      (reduce 
+      (reduce
         (fn [options value] (assoc options value false))
         [true true true true true] ;TODO: bitmask?
         (map
@@ -100,7 +102,7 @@
 ; TODO: reduce to a list?
 (defn board-options
   [board]
-  (map 
+  (map
     (fn [[k option-k]] [(board-replace-value board k (bit-or option-k 8)) option-k k])
     (mapcat
       (fn [k]
@@ -116,7 +118,7 @@
       true
       (if (< (value-with-place-mask board i) 8)
         false
-        (recur (+ i 1))))))
+        (recur (inc i))))))
 
 (def default-start-board [2 3 2 0 1 0 1 4 3 4 3 0 0 2 1 4]) ; 2D matrix of index|is-placed-mask
 (def default-start-tiles [3 4 3 3 3])                       ; index -> count

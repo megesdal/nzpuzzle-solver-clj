@@ -1,7 +1,7 @@
-(ns nzgame-clj.solnboardfinder-test
+(ns nzpuzzle-solver.solnfinder-test
   (:require [clojure.test :refer :all]
-            [nzgame-clj.solnboardfinder :refer :all]
-            [nzgame-clj.core :refer :all]))
+            [nzpuzzle-solver.solnboardfinder :refer :all]
+            [nzpuzzle-solver.core :refer :all]))
 
 (deftest a-test
   (testing "default board solutions"

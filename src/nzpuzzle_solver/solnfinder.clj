@@ -1,6 +1,6 @@
-(ns nzgame-clj.solnfinder
+(ns nzpuzzle-solver.solnfinder
   (:gen-class)
-  (:require [nzgame-clj.core :refer [board-print board-options complete?]]))
+  (:require [nzpuzzle-solver.core :refer [board-print board-options complete?]]))
 
 (defn- rec-find-solutions
   [path idx tiles input-paths]
@@ -41,10 +41,3 @@
       ; impasses
       )
     (println (count @input-paths))))
-
-;(defn rec-has-solution
-;  []
-
-;(defn has-solution
-;  [board tiles]
-;  (rec-has-solution board tiles (find-solution-board )))

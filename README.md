@@ -1,4 +1,4 @@
-# nzgame-clj-app
+# nzpuzzle-solver
 
 FIXME: description
 
@@ -10,7 +10,7 @@ Download from http://example.com/FIXME.
 
 FIXME: explanation
 
-    $ java -jar nzgame-clj-app-0.1.0-standalone.jar [args]
+    $ java -jar nzpuzzle-solver-0.1.0-standalone.jar [args]
 
 ## Options
 
