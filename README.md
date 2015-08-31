@@ -1,36 +1,14 @@
 # nzpuzzle-solver
 
-FIXME: description
+Brute force solver for the Neuseeland Puzzle by Philos Spiele.
 
-## Installation
+http://www.amazon.com/Philos-6217-New-Zealand/dp/B0006A3JA2
 
-Download from http://example.com/FIXME.
+Interesting article here: http://newzealandpuzzle.blogspot.com/
 
-## Usage
+### Work in progress...
 
-FIXME: explanation
+* Get a command line interface going
+* Analyze the impasses
+* Analyze all other possible starting boards with same tile distribution (4/3/3/3/3 to 3/4/3/3/3)
 
-    $ java -jar nzpuzzle-solver-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2015 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
