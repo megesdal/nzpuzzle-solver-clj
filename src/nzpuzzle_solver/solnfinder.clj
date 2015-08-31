@@ -1,6 +1,5 @@
 (ns nzpuzzle-solver.solnfinder
-  (:gen-class)
-  (:require [nzpuzzle-solver.core :refer [board-print board-options complete?]]))
+  (:require [nzpuzzle-solver.board :refer [board-print board-options complete?]]))
 
 (defn- rec-find-solutions
   [path idx tiles input-paths]

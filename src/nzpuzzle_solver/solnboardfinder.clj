@@ -1,9 +1,9 @@
 ;; Find all possible final states to allow paths which would not lead down
 ;; to one of these states to bail our early
+;;
 ;; TODO: Get rid of awareness of board implementation...
 (ns nzpuzzle-solver.solnboardfinder
-  (:gen-class)
-  (:require [nzpuzzle-solver.core :refer [value-with-place-mask
+  (:require [nzpuzzle-solver.board :refer [value-with-place-mask
                                           board-print
                                           board-expand
                                           board-replace-value
